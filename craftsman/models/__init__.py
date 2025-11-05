@@ -1,5 +1,6 @@
 from . import (
     autoencoders,
     conditional_encoders,
-    denoisers
+    denoisers,
+    transformers,
 )

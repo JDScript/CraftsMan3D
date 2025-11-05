@@ -15,6 +15,7 @@ from craftsman.utils.base import BaseModule
 from craftsman.utils.typing import *
 from craftsman.utils.misc import get_world_size
 from craftsman.utils.ops import generate_dense_grid_points
+from packaging import version
 
 ###################### Utils
 VALID_EMBED_TYPES = ["identity", "fourier", "learned_fourier", "siren"]
@@ -613,7 +614,10 @@ class MichelangeloAutoencoder(AutoEncoder):
 
         if self.cfg.pretrained_model_name_or_path != "":
             print(f"Loading pretrained model from {self.cfg.pretrained_model_name_or_path}")
-            pretrained_ckpt = torch.load(self.cfg.pretrained_model_name_or_path, map_location="cpu")
+            if version.parse(torch.__version__) >= version.parse("2.4"):
+                pretrained_ckpt = torch.load(self.cfg.pretrained_model_name_or_path, map_location="cpu", weights_only=False)
+            else:
+                pretrained_ckpt = torch.load(self.cfg.pretrained_model_name_or_path, map_location="cpu")
             if 'state_dict' in pretrained_ckpt:
                 _pretrained_ckpt = {}
                 for k, v in pretrained_ckpt['state_dict'].items():
